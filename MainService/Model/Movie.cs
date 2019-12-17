@@ -20,6 +20,17 @@ namespace MainService.Model
         public string Genre { get; set; }
 
         [DataMember]
-        public List<Actor> Starring { get; set; } = new List<Actor>();
+        public List<Actor> Starring { get; } = new List<Actor>();
+
+        public Actor Add(Actor actor)
+        {
+            Starring.Add(actor);
+            return actor;
+        }
+
+        public void SetNoActors()
+        {
+            Starring.Clear();
+        }
     }
 }

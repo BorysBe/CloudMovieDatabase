@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using CloudMovie.Specification.Factory;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 using Xunit.Abstractions;
@@ -15,7 +16,7 @@ namespace CloudMovie.Specification
         {
             var logProvider = new XunitLoggerProvider(testOutputHelper);
             var builder = new SpecificationCompositionRoot(logProvider)
-                .Initialize<TestStartup>();
+                .Initialize<TestStartup, SpecificationActorResponseFactory, SpecificationMovieResponseFactory>();
 
             TestServer = builder.Start();
             Client = TestServer.GetTestClient();

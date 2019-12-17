@@ -64,7 +64,7 @@ namespace CloudMovie.Specification
         public async void Link_existing_actor_to_existing_movie()
         {
             // Arrange
-            var url = "/api/Actor/Movie?title=" + Any.String();
+            var url = "/api/Movie/Actor?title=" + Any.String();
             var actor = Any.Instance<Actor>();
             string jsonString = JsonConvert.SerializeObject(actor);
             HttpContent httpContent = new StringContent(jsonString);
@@ -82,7 +82,7 @@ namespace CloudMovie.Specification
         public async void Update_information_about_existing_movie()
         {
             // Arrange
-            var url = "/api/Movie/Movie";
+            var url = "/api/Movie/Movie?title=" + Any.String();
             var updatedMovie = Any.Instance<Movie>();
             string jsonString = JsonConvert.SerializeObject(updatedMovie);
             HttpContent httpContent = new StringContent(jsonString);
@@ -173,7 +173,7 @@ namespace CloudMovie.Specification
             // Arrange
             var url = "/api/Movie/Movie";
             var movie = Any.Instance<Movie>();
-            movie.Starring = SetNoActors();
+            movie.SetNoActors();
             string jsonString = JsonConvert.SerializeObject(movie);
             HttpContent httpContent = new StringContent(jsonString);
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -184,11 +184,6 @@ namespace CloudMovie.Specification
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             var responseJson = await response.Content.ReadAsStringAsync();
-        }
-
-        private static List<Actor> SetNoActors()
-        {
-            return new List<Actor>() { /* empty */ };
         }
 
         [Fact]

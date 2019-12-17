@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using MainService.Contracts;
 using MainService.Model;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -10,27 +12,23 @@ namespace MainService.Controller
     [DisableCors]
     public class ActorController : ControllerBase
     {
-        public ActorController()
+        private readonly IActorResponseFactory _actorResponseFactory;
+
+        public ActorController(IActorResponseFactory actorResponseFactory)
         {
+            _actorResponseFactory = actorResponseFactory;
         }
 
         [HttpPost("Actor")]
-        public Task<string> New(Actor actor)
+        public Task<Actor> New(Actor actor)
         {
-            return Task.FromResult("ok");
+            return Task.FromResult(_actorResponseFactory.New(actor));
         }
 
         [HttpGet("Movie")]
-        public Task<string> ActorsFor(string title)
+        public Task<List<Actor>> ActorsFor(string title)
         {
-            return Task.FromResult("ok");
+            return Task.FromResult(_actorResponseFactory.AllActorsFor(title));
         }
-
-        [HttpPut("Movie")]
-        public Task<string> Update(string title, Actor actor)
-        {
-            return Task.FromResult("ok");
-        }
-
     }
 }

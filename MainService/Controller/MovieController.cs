@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using MainService.Contracts;
 using MainService.Model;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -10,45 +12,49 @@ namespace MainService.Controller
     [DisableCors]
     public class MovieController : ControllerBase
     {
-        public MovieController()
+        private readonly IMovieResponseFactory _movieResponseFactory;
+
+        public MovieController(IMovieResponseFactory movieResponseFactory)
         {
+            _movieResponseFactory = movieResponseFactory;
         }
 
         [HttpGet("Movie")]
-        public Task<string> All()
+        public Task<List<Movie>> All()
         {
-            return Task.FromResult("ok");
+            return Task.FromResult(_movieResponseFactory.AllMovies());
         }
 
         [HttpPost("Movie")]
-        public Task<string> New(Movie movie)
+        public Task<Movie> New(Movie movie)
         {
-            return Task.FromResult("ok");
+            return Task.FromResult(_movieResponseFactory.New(movie));
         }
 
         [HttpPut("Movie")]
-        public Task<string> Update(Movie movie)
+        public Task<Movie> Update(Movie movie)
         {
-            return Task.FromResult("ok");
+            return Task.FromResult(_movieResponseFactory.Updated(movie));
         }
         
         [HttpDelete("Movie")]
-        public Task<string> Delete(string title)
+        public Task<Movie> Delete(string title)
         {
-            return Task.FromResult("ok");
-        }
-
-        [HttpPut("Actor")]
-        public Task<string> PutActor(Actor actor, string title)
-        {
-            return Task.FromResult("ok");
+            return Task.FromResult(_movieResponseFactory.Deleted(title));
         }
 
         [HttpGet("Actor")]
-        public Task<string> MovieFor(string firstName, string lastName)
+        public Task<List<Movie>> MovieFor(string firstName, string lastName)
         {
-            return Task.FromResult("ok");
+            return Task.FromResult(_movieResponseFactory.MoviesFor(firstName, lastName));
         }
 
+        [HttpPut("Actor")]
+        public Task<Movie> Update(string title, Actor actor)
+        {
+            var movie = _movieResponseFactory.Get(title);
+            movie.Add(actor);
+            return Task.FromResult(_movieResponseFactory.Updated(movie));
+        }
     }
 }
