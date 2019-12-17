@@ -24,7 +24,7 @@ namespace MainService.Factory
             return _movieRepository.Create(movie);
         }
 
-        public Movie Updated(Movie movie)
+        public Movie Update(Movie movie)
         {
             return _movieRepository.Update(movie);
         }

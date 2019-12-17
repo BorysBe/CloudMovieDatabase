@@ -42,7 +42,7 @@ namespace MainService.Controller
         [HttpPut("Movie")]
         public Task<Movie> Update(Movie movie)
         {
-            return Task.FromResult(_movieResponseFactory.Updated(movie));
+            return Task.FromResult(_movieResponseFactory.Update(movie));
         }
         
         [HttpDelete("Movie")]
@@ -62,7 +62,7 @@ namespace MainService.Controller
         {
             var movie = _movieResponseFactory.Get(title);
             movie.Add(actor);
-            return Task.FromResult(_movieResponseFactory.Updated(movie));
+            return Task.FromResult(_movieResponseFactory.Update(movie));
         }
     }
 }

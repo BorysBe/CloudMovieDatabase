@@ -7,7 +7,7 @@ namespace MainService.Contracts
     {
         List<Movie> AllMovies();
         Movie New(Movie movie);
-        Movie Updated(Movie movie);
+        Movie Update(Movie movie);
         Movie Delete(string title);
         List<Movie> MoviesFor(string firstName, string lastName);
         Movie Get(string title);

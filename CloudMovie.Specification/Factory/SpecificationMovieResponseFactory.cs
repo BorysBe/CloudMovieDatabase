@@ -19,7 +19,7 @@ namespace CloudMovie.Specification.Factory
             return movie;
         }
 
-        public Movie Updated(Movie movie)
+        public Movie Update(Movie movie)
         {
             return movie;
         }
