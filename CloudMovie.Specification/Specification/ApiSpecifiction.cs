@@ -12,20 +12,21 @@ using TddXt.AnyRoot.Time;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CloudMovie.Specification
+namespace CloudMovie.Specification.Specification
 {
     using static Root;
 
-    public class Specification
+    public partial class ApiSpecification
     {
         public readonly TestBase Fixture;
 
-        public Specification(ITestOutputHelper testOutputHelper)
+        public ApiSpecification(ITestOutputHelper testOutputHelper)
         {
             Fixture = new TestBase(testOutputHelper);
         }
 
-        [Fact] public async void Add_new_movie_to_the_system() 
+        [Fact]
+        public async void Add_new_movie_to_the_system()
         {
             // Arrange
             var url = "/api/Movie/Movie";
@@ -33,13 +34,14 @@ namespace CloudMovie.Specification
             string jsonString = JsonConvert.SerializeObject(movie);
             HttpContent httpContent = new StringContent(jsonString);
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            
+
             // Act
             var response = await Fixture.Client.PostAsync(url, httpContent);
 
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<Movie>(out var createdMovie);
         }
 
         [Fact]
@@ -58,6 +60,7 @@ namespace CloudMovie.Specification
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<Actor>(out var createdActor);
         }
 
         [Fact]
@@ -76,6 +79,7 @@ namespace CloudMovie.Specification
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<Movie>(out var updatedMovie);
         }
 
         [Fact]
@@ -83,8 +87,8 @@ namespace CloudMovie.Specification
         {
             // Arrange
             var url = "/api/Movie/Movie?title=" + Any.String();
-            var updatedMovie = Any.Instance<Movie>();
-            string jsonString = JsonConvert.SerializeObject(updatedMovie);
+            var movieForUpdate = Any.Instance<Movie>();
+            string jsonString = JsonConvert.SerializeObject(movieForUpdate);
             HttpContent httpContent = new StringContent(jsonString);
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -94,6 +98,7 @@ namespace CloudMovie.Specification
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<Movie>(out var updatedMovie);
         }
 
         [Fact]
@@ -109,6 +114,7 @@ namespace CloudMovie.Specification
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<Movie>(out var removedMovie);
         }
 
         [Fact]
@@ -123,6 +129,7 @@ namespace CloudMovie.Specification
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<List<Movie>>(out var allMovies);
         }
 
         [Fact]
@@ -137,6 +144,7 @@ namespace CloudMovie.Specification
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<List<Movie>>(out var allMovies);
         }
 
         [Fact]
@@ -151,6 +159,7 @@ namespace CloudMovie.Specification
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<List<Actor>>(out var allMovieActors);
         }
 
         [Fact]
@@ -165,6 +174,7 @@ namespace CloudMovie.Specification
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
+            responseJson.Should().BeDeserializedTo<List<Movie>>(out var allMovies);
         }
 
         [Fact]
@@ -183,7 +193,6 @@ namespace CloudMovie.Specification
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            var responseJson = await response.Content.ReadAsStringAsync();
         }
 
         [Fact]
@@ -202,7 +211,6 @@ namespace CloudMovie.Specification
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            var responseJson = await response.Content.ReadAsStringAsync();
         }
 
         private static int SetFutureDate()
@@ -226,7 +234,6 @@ namespace CloudMovie.Specification
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            var responseJson = await response.Content.ReadAsStringAsync();
         }
 
         [Fact]
@@ -245,7 +252,6 @@ namespace CloudMovie.Specification
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            var responseJson = await response.Content.ReadAsStringAsync();
         }
 
         private string SetEmptyName()
