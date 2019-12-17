@@ -202,6 +202,7 @@ namespace CloudMovie.Specification.Specification
             var url = "/api/Movie/Movie";
             var movie = Any.Instance<Movie>();
             movie.Year = SetFutureDate();
+            movie.Starring.Add(Any.Instance<Actor>());
             string jsonString = JsonConvert.SerializeObject(movie);
             HttpContent httpContent = new StringContent(jsonString);
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");

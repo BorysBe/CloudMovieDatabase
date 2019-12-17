@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using MainService.Contracts;
 using MainService.Model;
@@ -28,6 +32,12 @@ namespace MainService.Controller
         [HttpPost("Movie")]
         public Task<Movie> New(Movie movie)
         {
+            if (!movie.Starring.Any() || movie.Year > DateTime.Now.Year)
+            {
+                Response.StatusCode = 400;
+                Task.FromResult(movie);
+            }
+
             return Task.FromResult(_movieResponseFactory.New(movie));
         }
 
