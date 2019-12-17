@@ -4,7 +4,7 @@ using MainService.Model;
 
 namespace MainService.Factory
 {
-    class ActorResponseFactory : IActorResponseFactory
+    public class ActorResponseFactory : IActorResponseFactory
     {
         public Actor New(Actor actor)
         {

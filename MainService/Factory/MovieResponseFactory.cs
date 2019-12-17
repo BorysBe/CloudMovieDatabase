@@ -4,7 +4,7 @@ using MainService.Model;
 
 namespace MainService.Factory
 {
-    class MovieResponseFactory : IMovieResponseFactory
+    public class MovieResponseFactory : IMovieResponseFactory
     {
         public List<Movie> AllMovies()
         {

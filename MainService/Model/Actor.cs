@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using MainService.Contracts;
 
 namespace MainService.Model
 {
     [DataContract]
     public class Actor
     {
+        [DataMember(EmitDefaultValue = false)]
+        public int Id { get; set; }
+
         [DataMember]
         [Required]
         public string FirstName { get; set; }
