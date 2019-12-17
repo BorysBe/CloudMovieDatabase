@@ -1,11 +1,63 @@
 using System;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using AutoFixture;
+using FluentAssertions;
+using MainService.Model;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using TddXt.AnyRoot;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace CloudMovie.Specification
 {
+    using static Root;
+
     public class Specification
     {
-        [Fact] public void Add_new_movie_to_the_system() { Fail(); }
+        public readonly TestBase Fixture;
+
+        public Specification(ITestOutputHelper testOutputHelper)
+        {
+            Fixture = new TestBase(testOutputHelper);
+        }
+
+        [Fact]
+        public async void Test()
+        {
+            // Arrange
+            var url = "/api/Movie/Test";
+
+            // Act
+            var response = await Fixture.Client.GetAsync(url);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+
+        [Fact] public async void Add_new_movie_to_the_system() 
+        {
+            // Arrange
+            var url = "/api/Movie/New";
+            var movie = Any.Instance<Movie>();
+            string jsonString = JsonConvert.SerializeObject(movie);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            
+            // Act
+            var response = await Fixture.Client.PutAsync(url, httpContent);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
         [Fact] public void Add_new_actor() { Fail(); }
         [Fact] public void Link_existing_actor_to_existing_movie() { Fail(); }
         [Fact] public void Update_information_about_existing_movie() { Fail(); }
