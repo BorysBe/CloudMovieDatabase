@@ -48,7 +48,7 @@ namespace MainService.Controller
         [HttpDelete("Movie")]
         public Task<Movie> Delete(string title)
         {
-            return Task.FromResult(_movieResponseFactory.Deleted(title));
+            return Task.FromResult(_movieResponseFactory.Delete(title));
         }
 
         [HttpGet("Actor")]

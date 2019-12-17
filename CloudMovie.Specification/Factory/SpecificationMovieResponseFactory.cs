@@ -24,12 +24,7 @@ namespace CloudMovie.Specification.Factory
             return movie;
         }
 
-        public Movie Deleted(string title)
-        {
-            return Any.Instance<Movie>();
-        }
-
-        public Movie WithActorFor(string title)
+        public Movie Delete(string title)
         {
             return Any.Instance<Movie>();
         }

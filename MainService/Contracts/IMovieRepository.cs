@@ -7,5 +7,7 @@ namespace MainService.Contracts
     {
         Movie Create(Movie actor);
         IEnumerable<Movie> RetrieveAll();
+        Movie Update(Movie movie);
+        Movie Delete(string title);
     }
 }
