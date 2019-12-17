@@ -16,7 +16,7 @@ namespace CloudMovie.Specification.Specification
 {
     using static Root;
 
-    public partial class ApiSpecification
+    public class ApiSpecification
     {
         public readonly TestBase Fixture;
 
