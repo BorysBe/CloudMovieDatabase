@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace MainService.Model
@@ -8,9 +9,11 @@ namespace MainService.Model
     public class Actor
     {
         [DataMember]
+        [Required]
         public string FirstName { get; set; }
 
         [DataMember]
+        [Required]
         public string LastName { get; set; }
 
         [DataMember]

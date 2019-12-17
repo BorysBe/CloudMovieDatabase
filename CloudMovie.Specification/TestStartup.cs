@@ -27,7 +27,9 @@ namespace CloudMovie.Specification
         {
             services.AddControllers()
                 .AddNewtonsoftJson()
-                .AddApplicationPart(Assembly.GetAssembly(typeof(MovieController)));
+                .AddApplicationPart(Assembly.GetAssembly(typeof(MovieController)))
+                .AddApplicationPart(Assembly.GetAssembly(typeof(ActorController)));
+            ;
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>

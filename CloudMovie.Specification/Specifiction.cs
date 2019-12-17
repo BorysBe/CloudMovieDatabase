@@ -1,15 +1,14 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using AutoFixture;
 using FluentAssertions;
 using MainService.Model;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using TddXt.AnyRoot;
+using TddXt.AnyRoot.Strings;
+using TddXt.AnyRoot.Time;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -26,11 +25,97 @@ namespace CloudMovie.Specification
             Fixture = new TestBase(testOutputHelper);
         }
 
-        [Fact]
-        public async void Test()
+        [Fact] public async void Add_new_movie_to_the_system() 
         {
             // Arrange
-            var url = "/api/Movie/Test";
+            var url = "/api/Movie/Movie";
+            var movie = Any.Instance<Movie>();
+            string jsonString = JsonConvert.SerializeObject(movie);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            
+            // Act
+            var response = await Fixture.Client.PostAsync(url, httpContent);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async void Add_new_actor()
+        {
+            // Arrange
+            var url = "/api/Actor/Actor";
+            var actor = Any.Instance<Actor>();
+            string jsonString = JsonConvert.SerializeObject(actor);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            // Act
+            var response = await Fixture.Client.PostAsync(url, httpContent);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async void Link_existing_actor_to_existing_movie()
+        {
+            // Arrange
+            var url = "/api/Actor/Movie?title=" + Any.String();
+            var actor = Any.Instance<Actor>();
+            string jsonString = JsonConvert.SerializeObject(actor);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            // Act
+            var response = await Fixture.Client.PutAsync(url, httpContent);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async void Update_information_about_existing_movie()
+        {
+            // Arrange
+            var url = "/api/Movie/Movie";
+            var updatedMovie = Any.Instance<Movie>();
+            string jsonString = JsonConvert.SerializeObject(updatedMovie);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            // Act
+            var response = await Fixture.Client.PutAsync(url, httpContent);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async void Delete_existing_movie()
+        {
+            // Arrange
+            var title = Any.Instance<Movie>().Title;
+            var url = $"/api/Movie/Movie?title={title}";
+
+            // Act
+            var response = await Fixture.Client.DeleteAsync(url);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async void List_movies_all()
+        {
+            // Arrange
+            var url = "/api/Movie/Movie";
 
             // Act
             var response = await Fixture.Client.GetAsync(url);
@@ -40,38 +125,137 @@ namespace CloudMovie.Specification
             var responseJson = await response.Content.ReadAsStringAsync();
         }
 
-
-        [Fact] public async void Add_new_movie_to_the_system() 
+        [Fact]
+        public async void List_movies_by_year()
         {
             // Arrange
-            var url = "/api/Movie/New";
-            var movie = Any.Instance<Movie>();
-            string jsonString = JsonConvert.SerializeObject(movie);
-            HttpContent httpContent = new StringContent(jsonString);
-            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            
+            var url = "/api/Movie/Movie?year=" + Any.DateTime().ToString("yyyy");
+
             // Act
-            var response = await Fixture.Client.PutAsync(url, httpContent);
+            var response = await Fixture.Client.GetAsync(url);
 
             // Assert
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync();
         }
 
-        [Fact] public void Add_new_actor() { Fail(); }
-        [Fact] public void Link_existing_actor_to_existing_movie() { Fail(); }
-        [Fact] public void Update_information_about_existing_movie() { Fail(); }
-        [Fact] public void Delete_existing_movie() { Fail(); }
-        [Fact] public void List_movies_all_and_by_year() { Fail(); }
-        [Fact] public void List_actors_starring_in_a_movie() { Fail(); }
-        [Fact] public void List_movies_with_given_actor() { Fail(); }
-        [Fact] public void Cannot_add_new_movie_without_actors() { Fail(); }
-        [Fact] public void Movies_year_cannot_be_a_future_year() { Fail(); }
-        [Fact] public void Actors_first_and_last_name_cannot_be_empty() { Fail(); }
-        
-        private void Fail()
+        [Fact]
+        public async void List_actors_starring_in_a_movie()
         {
-            Assert.True(false, "Not finished test");
+            // Arrange
+            var url = "/api/Actor/Movie?title=" + Any.String();
+
+            // Act
+            var response = await Fixture.Client.GetAsync(url);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async void List_movies_with_given_actor()
+        {
+            // Arrange
+            var url = "/api/Movie/Actor?firstName=" + Any.String() + "&lastName" + Any.String();
+
+            // Act
+            var response = await Fixture.Client.GetAsync(url);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async void Cannot_add_new_movie_without_actors()
+        {
+            // Arrange
+            var url = "/api/Movie/Movie";
+            var movie = Any.Instance<Movie>();
+            movie.Starring = SetNoActors();
+            string jsonString = JsonConvert.SerializeObject(movie);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            // Act
+            var response = await Fixture.Client.PostAsync(url, httpContent);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        private static List<Actor> SetNoActors()
+        {
+            return new List<Actor>() { /* empty */ };
+        }
+
+        [Fact]
+        public async void Movies_year_cannot_be_a_future_year()
+        {
+            // Arrange
+            var url = "/api/Movie/Movie";
+            var movie = Any.Instance<Movie>();
+            movie.Year = SetFutureDate();
+            string jsonString = JsonConvert.SerializeObject(movie);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            // Act
+            var response = await Fixture.Client.PostAsync(url, httpContent);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        private static int SetFutureDate()
+        {
+            return DateTime.Now.AddYears(1).Year;
+        }
+
+        [Fact]
+        public async void Actors_first_name_cannot_be_empty()
+        {
+            // Arrange
+            var url = "/api/Actor/Actor";
+            var actor = Any.Instance<Actor>();
+            actor.FirstName = SetEmptyName();
+            string jsonString = JsonConvert.SerializeObject(actor);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            // Act
+            var response = await Fixture.Client.PostAsync(url, httpContent);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        [Fact]
+        public async void Actors_last_name_cannot_be_empty()
+        {
+            // Arrange
+            var url = "/api/Actor/Actor";
+            var actor = Any.Instance<Actor>();
+            actor.LastName = SetEmptyName();
+            string jsonString = JsonConvert.SerializeObject(actor);
+            HttpContent httpContent = new StringContent(jsonString);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            // Act
+            var response = await Fixture.Client.PostAsync(url, httpContent);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            var responseJson = await response.Content.ReadAsStringAsync();
+        }
+
+        private string SetEmptyName()
+        {
+            return string.Empty;
         }
     }
 }

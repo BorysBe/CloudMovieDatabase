@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -9,10 +10,11 @@ namespace MainService.Model
     public class Movie
     {
         [DataMember]
+        [Required]
         public string Title { get; set; }
 
         [DataMember] 
-        public short Year { get; set; }
+        public int Year { get; set; }
 
         [DataMember]
         public string Genre { get; set; }
